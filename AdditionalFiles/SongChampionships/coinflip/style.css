@@ -1,0 +1,71 @@
+h2 {
+  margin: .25rem;
+}
+
+div.container {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  padding: 1rem;
+  background-color: skyblue;
+}
+
+#coin {
+  position: relative;
+  width: 15rem;
+  height: 15rem;
+  margin: 2rem 0rem;
+  transform-style: preserve-3d;
+
+}
+
+#coin div {
+  width: 100%;
+  height: 100%;
+  //border: 2px solid black;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  background-size: contain;
+  position: absolute;
+}
+
+.right {
+    background-image: url("coin right.png");
+}
+
+.animate-right {
+  animation: flipHeads 10s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes flipHeads {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(5760deg);
+  }
+}
+
+.left {
+    background-image: url("coin left.png");
+  transform: rotateY(-180deg);
+}
+
+.animate-left {
+  animation: flipTails 10s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes flipTails {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(5580deg);
+  }
+}
