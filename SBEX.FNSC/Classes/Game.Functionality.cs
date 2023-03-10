@@ -214,26 +214,25 @@ namespace SBEX.FNSC.Classes
 			string html = "<table height=\"100%\"><tr><td width=\"45%\" vertical-align=\"center\"><iframe width=\"864\" height=\"486\" src=\"https://www.youtube.com/embed/<song1>\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></td><td width=\"10%\"></td><td width=\"45%\"><iframe width=\"864\" height=\"486\" src=\"https://www.youtube.com/embed/<song2>\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></td></tr></table>";
 			int additionalStartTime = 0;
             if (votingTime > 0)
+				switch (this.CurrentRound.RoundNumber)
+				{
+					case 2:
+						additionalStartTime = votingTime/2;
+						break;
+					case 3:
 
-            switch (this.CurrentRound.RoundNumber)
-			{
-				case 2:
-					additionalStartTime = votingTime/2;
-					break;
-				case 3:
-
-					additionalStartTime = votingTime;
-					break;
-				case 4:
-					additionalStartTime = Convert.ToInt32(votingTime*1.5);
-					break;
-				case 5:
-					additionalStartTime = votingTime*2;
-					break;
-				case 6:
-					additionalStartTime = Convert.ToInt32(votingTime*2.5);
-					break;
-			}
+						additionalStartTime = votingTime;
+						break;
+					case 4:
+						additionalStartTime = Convert.ToInt32(votingTime*1.5);
+						break;
+					case 5:
+						additionalStartTime = votingTime*2;
+						break;
+					case 6:
+						additionalStartTime = Convert.ToInt32(votingTime*2.5);
+						break;
+				}
 			
 			html = html.Replace("<song1>", this.CurrentMatchup.Song1.Code + ((this.CurrentMatchup.Song1.StartTime > 0) ? "?start=" + (this.CurrentMatchup.Song1.StartTime+additionalStartTime) : ""));
 			html = html.Replace("<song2>", this.CurrentMatchup.Song2.Code + ((this.CurrentMatchup.Song2.StartTime > 0) ? "?start=" + (this.CurrentMatchup.Song2.StartTime + additionalStartTime) : ""));
