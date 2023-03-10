@@ -1,0 +1,5 @@
+﻿This project requires two additional text files:
+- YTApiKey.txt - should contain ONLY your Youtube API key
+- DiscordURL - should contain your complete Discord Webhook URL
+
+Both files should be set to "Copy always"!

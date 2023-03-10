@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamerBotDummy", "StreamerBotDummy\StreamerBotDummy.csproj", "{819D220D-AD00-4162-B036-137262E44047}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBEX.FNSC", "SBEX.FNSC\SBEX.FNSC.csproj", "{F5771311-6B91-4AE3-8C81-368552F0FB30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{819D220D-AD00-4162-B036-137262E44047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{819D220D-AD00-4162-B036-137262E44047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{819D220D-AD00-4162-B036-137262E44047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{819D220D-AD00-4162-B036-137262E44047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5771311-6B91-4AE3-8C81-368552F0FB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5771311-6B91-4AE3-8C81-368552F0FB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5771311-6B91-4AE3-8C81-368552F0FB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5771311-6B91-4AE3-8C81-368552F0FB30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD69399D-3FC4-4862-8C3E-E8174331CF6B}
+	EndGlobalSection
+EndGlobal

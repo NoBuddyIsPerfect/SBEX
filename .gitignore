@@ -348,3 +348,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/StreamerBotDummy/YTApiKey.txt
+/StreamerBotDummy/discordURL.txt
