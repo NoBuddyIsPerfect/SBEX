@@ -34,13 +34,13 @@ Additional files:
 - SourceCopy.json -> Import file for OBS when using SourceCopy plugin
 - SceneCollection.json -> Import file for OBS when using default scene collection import
 - Folder "SongChampionships"
--- 60.html -> HTML file for the 60 second countdown (copy and adjust for different countdowns)
--- championship.html -> Main file for displaying videos during championship
--- timer.wav -> Sound to play during the last 10 seconds of the countdown
--- end.mp3 -> Sound to play when the countdown is over
--- style.css -> Stylesheet
--- Folder "coinflip"
---- coin left.png and coin right.png -> Images of the coin
---- index.html -> HTML file to display the coinflip
---- script.js -> Script file that handles the callback to Streamer.Bot
---- style.css -> Stylesheet
+  - 60.html -> HTML file for the 60 second countdown (copy and adjust for different countdowns)
+  - championship.html -> Main file for displaying videos during championship
+  - timer.wav -> Sound to play during the last 10 seconds of the countdown
+  - end.mp3 -> Sound to play when the countdown is over
+  - style.css -> Stylesheet
+  - Folder "coinflip"
+    - coin left.png and coin right.png -> Images of the coin
+    - index.html -> HTML file to display the coinflip
+    - script.js -> Script file that handles the callback to Streamer.Bot
+    - style.css -> Stylesheet
