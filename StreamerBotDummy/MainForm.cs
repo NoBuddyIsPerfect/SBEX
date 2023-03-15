@@ -122,13 +122,8 @@ namespace StreamerBotForms
         {
             
             string code = txtCode.Text;
-            int time = int.Parse(txtTime.Text);
             ResetArgs();
 
-            if (code.StartsWith("http"))
-                code = code + (time > 0 && !code.Contains("&t=") ? $"&t={time}" : "");
-            else
-                code = "https://www.youtube.com/watch?v=" + code + "&t=" + time;
             myargs.Add("command", "youtube");
             myargs.Add("rawInput", code);
             myargs.Add("user", cboSubmitUser.Text);

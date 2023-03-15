@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.txtSaveGame = new System.Windows.Forms.TextBox();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnOpenVoting60 = new System.Windows.Forms.Button();
             this.btnCoinflip = new System.Windows.Forms.Button();
             this.btnExportDC = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
@@ -54,9 +56,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtTheme = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.txtSongsPP = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtNoOfSongs = new System.Windows.Forms.TextBox();
             this.btnSetup = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cboSubmitUser = new System.Windows.Forms.ComboBox();
@@ -77,13 +77,21 @@
             this.colCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDisplayText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colURL = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnOpenVoting60 = new System.Windows.Forms.Button();
+            this.cboNoOfSongs = new System.Windows.Forms.ComboBox();
+            this.cboSongsPerPerson = new System.Windows.Forms.ComboBox();
+            this.numVotesSeconds = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.numPlayingTime = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numVotesSeconds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayingTime)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox5
@@ -98,6 +106,7 @@
             this.groupBox5.TabIndex = 5;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Saving";
+            this.groupBox5.Visible = false;
             // 
             // txtSaveGame
             // 
@@ -130,6 +139,8 @@
             // groupBox4
             // 
             this.groupBox4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.groupBox4.Controls.Add(this.label9);
+            this.groupBox4.Controls.Add(this.numVotesSeconds);
             this.groupBox4.Controls.Add(this.btnOpenVoting60);
             this.groupBox4.Controls.Add(this.btnCoinflip);
             this.groupBox4.Controls.Add(this.btnExportDC);
@@ -143,6 +154,18 @@
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "General";
+            // 
+            // btnOpenVoting60
+            // 
+            this.btnOpenVoting60.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
+            this.btnOpenVoting60.Location = new System.Drawing.Point(87, 16);
+            this.btnOpenVoting60.Name = "btnOpenVoting60";
+            this.btnOpenVoting60.Size = new System.Drawing.Size(91, 22);
+            this.btnOpenVoting60.TabIndex = 7;
+            this.btnOpenVoting60.Text = "Open votes for";
+            this.toolTip1.SetToolTip(this.btnOpenVoting60, "Open voting and close it after X seconds");
+            this.btnOpenVoting60.UseVisualStyleBackColor = true;
+            this.btnOpenVoting60.Click += new System.EventHandler(this.btnOpenVoting60_Click);
             // 
             // btnCoinflip
             // 
@@ -161,6 +184,7 @@
             this.btnExportDC.Size = new System.Drawing.Size(75, 34);
             this.btnExportDC.TabIndex = 6;
             this.btnExportDC.Text = "Export DC";
+            this.toolTip1.SetToolTip(this.btnExportDC, "Export the current chamionship to Discord");
             this.btnExportDC.UseVisualStyleBackColor = true;
             this.btnExportDC.Click += new System.EventHandler(this.btnExportDC_Click);
             // 
@@ -171,6 +195,7 @@
             this.btnExport.Size = new System.Drawing.Size(75, 34);
             this.btnExport.TabIndex = 5;
             this.btnExport.Text = "Export";
+            this.toolTip1.SetToolTip(this.btnExport, "Export the current chamionship to the file system");
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
@@ -181,6 +206,7 @@
             this.btnCloseVoting.Size = new System.Drawing.Size(75, 23);
             this.btnCloseVoting.TabIndex = 2;
             this.btnCloseVoting.Text = "Close votes";
+            this.toolTip1.SetToolTip(this.btnCloseVoting, "Close voting manually");
             this.btnCloseVoting.UseVisualStyleBackColor = true;
             this.btnCloseVoting.Click += new System.EventHandler(this.btnCloseVoting_Click);
             // 
@@ -191,6 +217,7 @@
             this.btnOpenVoting.Size = new System.Drawing.Size(75, 22);
             this.btnOpenVoting.TabIndex = 1;
             this.btnOpenVoting.Text = "Open votes";
+            this.toolTip1.SetToolTip(this.btnOpenVoting, "Open voting until closed manually");
             this.btnOpenVoting.UseVisualStyleBackColor = true;
             this.btnOpenVoting.Click += new System.EventHandler(this.btnOpenVoting_Click);
             // 
@@ -200,7 +227,8 @@
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(75, 34);
             this.btnNext.TabIndex = 4;
-            this.btnNext.Text = "Next Match";
+            this.btnNext.Text = "Next battle";
+            this.toolTip1.SetToolTip(this.btnNext, "Continue to the next battle");
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
@@ -226,6 +254,7 @@
             this.cboVoteUser.Name = "cboVoteUser";
             this.cboVoteUser.Size = new System.Drawing.Size(132, 21);
             this.cboVoteUser.TabIndex = 22;
+            this.toolTip1.SetToolTip(this.cboVoteUser, "User to vote as");
             this.cboVoteUser.ValueMember = "id";
             // 
             // label7
@@ -244,6 +273,7 @@
             this.btnVote2.Size = new System.Drawing.Size(63, 23);
             this.btnVote2.TabIndex = 3;
             this.btnVote2.Text = "Vote 2";
+            this.toolTip1.SetToolTip(this.btnVote2, "Send a vote as the above user for Song No 2");
             this.btnVote2.UseVisualStyleBackColor = true;
             this.btnVote2.Click += new System.EventHandler(this.btnVote2_Click);
             // 
@@ -254,12 +284,17 @@
             this.btnVote1.Size = new System.Drawing.Size(63, 23);
             this.btnVote1.TabIndex = 2;
             this.btnVote1.Text = "Vote 1";
+            this.toolTip1.SetToolTip(this.btnVote1, "Send a vote as the above user for Song No 1");
             this.btnVote1.UseVisualStyleBackColor = true;
             this.btnVote1.Click += new System.EventHandler(this.btnVote1_Click);
             // 
             // groupBox2
             // 
             this.groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.numPlayingTime);
+            this.groupBox2.Controls.Add(this.cboSongsPerPerson);
+            this.groupBox2.Controls.Add(this.cboNoOfSongs);
             this.groupBox2.Controls.Add(this.btnReset);
             this.groupBox2.Controls.Add(this.btnModify);
             this.groupBox2.Controls.Add(this.label8);
@@ -269,9 +304,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.txtTheme);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.txtSongsPP);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.txtNoOfSongs);
             this.groupBox2.Controls.Add(this.btnSetup);
             this.groupBox2.Location = new System.Drawing.Point(136, 247);
             this.groupBox2.Name = "groupBox2";
@@ -289,16 +322,18 @@
             this.btnReset.Size = new System.Drawing.Size(75, 34);
             this.btnReset.TabIndex = 9;
             this.btnReset.Text = "Reset Game";
+            this.toolTip1.SetToolTip(this.btnReset, "RESET AND DELETE THE CURRENT GAME! ");
             this.btnReset.UseVisualStyleBackColor = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // btnModify
             // 
-            this.btnModify.Location = new System.Drawing.Point(93, 161);
+            this.btnModify.Location = new System.Drawing.Point(90, 191);
             this.btnModify.Name = "btnModify";
             this.btnModify.Size = new System.Drawing.Size(84, 23);
             this.btnModify.TabIndex = 8;
-            this.btnModify.Text = "Modify Game";
+            this.btnModify.Text = "Modify SC";
+            this.toolTip1.SetToolTip(this.btnModify, "Modify the current chamionship to use the above parameters");
             this.btnModify.UseVisualStyleBackColor = true;
             this.btnModify.Click += new System.EventHandler(this.btnModify_Click);
             // 
@@ -318,6 +353,7 @@
             this.txtSCNo.Size = new System.Drawing.Size(105, 20);
             this.txtSCNo.TabIndex = 4;
             this.txtSCNo.Text = "1";
+            this.toolTip1.SetToolTip(this.txtSCNo, "Number of the chamionship (used in Discord message)");
             // 
             // chkRandom
             // 
@@ -330,6 +366,8 @@
             this.chkRandom.Size = new System.Drawing.Size(78, 17);
             this.chkRandom.TabIndex = 6;
             this.chkRandom.Text = "Random    ";
+            this.toolTip1.SetToolTip(this.chkRandom, "Should songs and matched be randomized or played in order of submission submissio" +
+        "n?");
             this.chkRandom.UseVisualStyleBackColor = true;
             // 
             // chkDoubles
@@ -341,6 +379,7 @@
             this.chkDoubles.Size = new System.Drawing.Size(77, 17);
             this.chkDoubles.TabIndex = 5;
             this.chkDoubles.Text = "Doubles    ";
+            this.toolTip1.SetToolTip(this.chkDoubles, "Can the same YT URL be submitted twice?");
             this.chkDoubles.UseVisualStyleBackColor = true;
             // 
             // label4
@@ -358,7 +397,8 @@
             this.txtTheme.Name = "txtTheme";
             this.txtTheme.Size = new System.Drawing.Size(105, 20);
             this.txtTheme.TabIndex = 3;
-            this.txtTheme.Text = "Test theme";
+            this.txtTheme.Text = "Open submissions";
+            this.toolTip1.SetToolTip(this.txtTheme, "Theme of the chamionship");
             // 
             // label5
             // 
@@ -369,14 +409,6 @@
             this.label5.TabIndex = 12;
             this.label5.Text = "Songs/PP";
             // 
-            // txtSongsPP
-            // 
-            this.txtSongsPP.Location = new System.Drawing.Point(69, 42);
-            this.txtSongsPP.Name = "txtSongsPP";
-            this.txtSongsPP.Size = new System.Drawing.Size(105, 20);
-            this.txtSongsPP.TabIndex = 1;
-            this.txtSongsPP.Text = "4";
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -386,21 +418,14 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "NoOfSong";
             // 
-            // txtNoOfSongs
-            // 
-            this.txtNoOfSongs.Location = new System.Drawing.Point(69, 16);
-            this.txtNoOfSongs.Name = "txtNoOfSongs";
-            this.txtNoOfSongs.Size = new System.Drawing.Size(105, 20);
-            this.txtNoOfSongs.TabIndex = 0;
-            this.txtNoOfSongs.Text = "4";
-            // 
             // btnSetup
             // 
-            this.btnSetup.Location = new System.Drawing.Point(5, 161);
+            this.btnSetup.Location = new System.Drawing.Point(9, 191);
             this.btnSetup.Name = "btnSetup";
-            this.btnSetup.Size = new System.Drawing.Size(83, 23);
+            this.btnSetup.Size = new System.Drawing.Size(76, 23);
             this.btnSetup.TabIndex = 7;
-            this.btnSetup.Text = "Setup Game";
+            this.btnSetup.Text = "Setup SC";
+            this.toolTip1.SetToolTip(this.btnSetup, "Setup a new championship with the above parameters");
             this.btnSetup.UseVisualStyleBackColor = true;
             this.btnSetup.Click += new System.EventHandler(this.btnSetup_Click);
             // 
@@ -429,6 +454,7 @@
             this.cboSubmitUser.Name = "cboSubmitUser";
             this.cboSubmitUser.Size = new System.Drawing.Size(100, 21);
             this.cboSubmitUser.TabIndex = 23;
+            this.toolTip1.SetToolTip(this.cboSubmitUser, "User to submit as");
             this.cboSubmitUser.ValueMember = "id";
             // 
             // label3
@@ -447,6 +473,7 @@
             this.txtTime.Size = new System.Drawing.Size(100, 20);
             this.txtTime.TabIndex = 2;
             this.txtTime.Text = "0";
+            this.toolTip1.SetToolTip(this.txtTime, "Manual start time (if not included in URL)");
             // 
             // label2
             // 
@@ -463,6 +490,7 @@
             this.txtCode.Name = "txtCode";
             this.txtCode.Size = new System.Drawing.Size(100, 20);
             this.txtCode.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.txtCode, "Code or URL to YT video");
             this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCode_KeyDown);
             // 
             // label1
@@ -508,7 +536,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(600, 118);
+            this.dataGridView1.Size = new System.Drawing.Size(600, 240);
             this.dataGridView1.TabIndex = 6;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
@@ -587,15 +615,111 @@
             this.colURL.Name = "colURL";
             this.colURL.ReadOnly = true;
             // 
-            // btnOpenVotes60
+            // cboNoOfSongs
             // 
-            this.btnOpenVoting60.Location = new System.Drawing.Point(87, 16);
-            this.btnOpenVoting60.Name = "btnOpenVotes60";
-            this.btnOpenVoting60.Size = new System.Drawing.Size(156, 22);
-            this.btnOpenVoting60.TabIndex = 7;
-            this.btnOpenVoting60.Text = "Open votes (60)";
-            this.btnOpenVoting60.UseVisualStyleBackColor = true;
-            this.btnOpenVoting60.Click += new System.EventHandler(this.btnOpenVoting60_Click);
+            this.cboNoOfSongs.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboNoOfSongs.FormattingEnabled = true;
+            this.cboNoOfSongs.Items.AddRange(new object[] {
+            "2",
+            "4",
+            "8",
+            "16",
+            "32",
+            "64",
+            "128"});
+            this.cboNoOfSongs.Location = new System.Drawing.Point(69, 16);
+            this.cboNoOfSongs.Name = "cboNoOfSongs";
+            this.cboNoOfSongs.Size = new System.Drawing.Size(105, 21);
+            this.cboNoOfSongs.TabIndex = 19;
+            this.toolTip1.SetToolTip(this.cboNoOfSongs, "Number of songs in the chamionship");
+            // 
+            // cboSongsPerPerson
+            // 
+            this.cboSongsPerPerson.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSongsPerPerson.FormattingEnabled = true;
+            this.cboSongsPerPerson.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"});
+            this.cboSongsPerPerson.Location = new System.Drawing.Point(69, 42);
+            this.cboSongsPerPerson.Name = "cboSongsPerPerson";
+            this.cboSongsPerPerson.Size = new System.Drawing.Size(105, 21);
+            this.cboSongsPerPerson.TabIndex = 20;
+            this.toolTip1.SetToolTip(this.cboSongsPerPerson, "Number of songs each viewer can submit");
+            // 
+            // numVotesSeconds
+            // 
+            this.numVotesSeconds.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.numVotesSeconds.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numVotesSeconds.Location = new System.Drawing.Point(180, 18);
+            this.numVotesSeconds.Maximum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.numVotesSeconds.Name = "numVotesSeconds";
+            this.numVotesSeconds.Size = new System.Drawing.Size(38, 18);
+            this.numVotesSeconds.TabIndex = 8;
+            this.toolTip1.SetToolTip(this.numVotesSeconds, "Number of seconds to keep voting open for");
+            this.numVotesSeconds.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
+            this.label9.Location = new System.Drawing.Point(224, 20);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(23, 13);
+            this.label9.TabIndex = 11;
+            this.label9.Text = "sec";
+            // 
+            // numPlayingTime
+            // 
+            this.numPlayingTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.numPlayingTime.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numPlayingTime.Location = new System.Drawing.Point(69, 165);
+            this.numPlayingTime.Maximum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.numPlayingTime.Name = "numPlayingTime";
+            this.numPlayingTime.Size = new System.Drawing.Size(105, 20);
+            this.numPlayingTime.TabIndex = 21;
+            this.toolTip1.SetToolTip(this.numPlayingTime, "Amount of seconds every song will be played before voting is opeened");
+            this.numPlayingTime.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 167);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(56, 13);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "Initial secs";
             // 
             // SongListForm
             // 
@@ -611,10 +735,12 @@
             this.MinimumSize = new System.Drawing.Size(616, 466);
             this.Name = "SongListForm";
             this.Text = "Song Championship Management";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SongListForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SongListForm_FormClosed);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -622,6 +748,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numVotesSeconds)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayingTime)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -647,9 +775,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtTheme;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox txtSongsPP;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtNoOfSongs;
         private System.Windows.Forms.Button btnSetup;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
@@ -677,5 +803,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colDisplayText;
         private System.Windows.Forms.DataGridViewTextBoxColumn colURL;
         private System.Windows.Forms.Button btnOpenVoting60;
+        private System.Windows.Forms.ComboBox cboSongsPerPerson;
+        private System.Windows.Forms.ComboBox cboNoOfSongs;
+        private System.Windows.Forms.NumericUpDown numVotesSeconds;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown numPlayingTime;
     }
 }

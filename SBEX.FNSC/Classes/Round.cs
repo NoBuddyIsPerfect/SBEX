@@ -16,7 +16,6 @@ namespace SBEX.FNSC.Classes
         public int RoundNumber { get; set; }
         [NonSerialized]
         public List<Match> Matches;
-
         public List<Match> FinishedMatches { get; set; }
 
         public string Export()

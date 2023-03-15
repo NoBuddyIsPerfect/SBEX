@@ -39,7 +39,10 @@ namespace SBEX.FNSC.Classes
             }
             else
             {
-                _ctx.Send(delegate { BaseListChanged(e); }, null);
+                try
+                {
+                    _ctx.Send(delegate { BaseListChanged(e); }, null);
+                }catch(InvalidAsynchronousStateException ey) { }
             }
         }
         void BaseListChanged(ListChangedEventArgs e)

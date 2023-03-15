@@ -10,12 +10,12 @@ namespace SBEX.FNSC.Extensions
         static bool ensureDiversity = true;
         public static void Shuffle<T>(this IList<T> list)
         {
-            
+
             int n = list.Count;
             while (n > 1)
             {
                 n--;
-    
+
                 int k = rng.Next(n + 1);
                 int i = 0;
                 if (ensureDiversity && typeof(Song).IsAssignableFrom(typeof(T)))
@@ -40,5 +40,20 @@ namespace SBEX.FNSC.Extensions
             }
             ensureDiversity = true;
         }
+
+        public static int VotingTime<T>(this IList<T> list)
+        {
+            int votingTime = 0;
+            if (typeof(Match).IsAssignableFrom(typeof(T)))
+                foreach (var item in list)
+                {
+                    votingTime += (item as Match).VotingTime;
+                }
+            return votingTime;
+        }
+
+
+
     }
+
 }

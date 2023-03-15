@@ -595,7 +595,7 @@ namespace StreamerBotForms
         public void ObsSetGdiText(string scene, string source, string text, int connection = 0)
         {
             Console.WriteLine($"Setting text of {scene}:{source} to \"{text}\"");
-            Form.Log($"Setting text of {scene}:{source} to \"{text}\"", false);
+         //   Form.Log($"Setting text of {scene}:{source} to \"{text}\"", false);
         }
 
         public void ObsSetImageSourceFile(string scene, string source, string file, int connection = 0)

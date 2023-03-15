@@ -5,6 +5,7 @@ using SBEX.FNSC.Platforms;
 using Streamer.bot.Plugin.Interface;
 using System;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -28,19 +29,8 @@ namespace SBEX.FNSC.Classes
 		#region ADMIN
 		public bool ModifyGame(Arguments args, bool updateRandom, bool updateDouble)
 		{
-			if (args.NoOfSongs > 0 && this.NoOfSongs != args.NoOfSongs)
-				this.NoOfSongs = args.NoOfSongs;
-			if (args.NoOfSongsPerPerson > 0 && this.NoOfSongsPerPerson != args.NoOfSongsPerPerson)
-				this.NoOfSongsPerPerson = args.NoOfSongsPerPerson;
-			if (updateDouble && this.AllowDoubles != args.DoublesAllowed)
-				this.AllowDoubles = args.DoublesAllowed;
-			if (args.ChampionshipNo > 0 && this.ChampionshipNo != args.ChampionshipNo)
-				this.ChampionshipNo = args.ChampionshipNo;
-			if (!string.IsNullOrEmpty(args.Theme) && this.Theme != args.Theme)
-				this.Theme = args.Theme;
-			if (updateRandom && this.Random != args.Random)
-				this.Random = args.Random;
-			return true;
+			return ModifyGame(args.NoOfSongs, args.NoOfSongsPerPerson, args.ChampionshipNo, args.Theme, args.DoublesAllowed, args.Random, updateRandom, updateDouble);
+			
 
 			
 			
@@ -136,7 +126,7 @@ namespace SBEX.FNSC.Classes
 			return true;
 		}
 		[JsonIgnore]
-		public int votingTime = 0;
+		public int PlayingTime = 0;
 		public bool NextMatch()
 		{
 			Log("[SC] - Starting nextMatch - CurrentMatchCount: " + this.CurrentRound.Matches.Count + "; FinishedCount: " + this.CurrentRound.FinishedMatches.Count);
@@ -213,29 +203,17 @@ namespace SBEX.FNSC.Classes
 			CPH?.ObsSetSourceVisibility(OBSScene, MainBrowserSource, false);
 			string html = "<table height=\"100%\"><tr><td width=\"45%\" vertical-align=\"center\"><iframe width=\"864\" height=\"486\" src=\"https://www.youtube.com/embed/<song1>\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></td><td width=\"10%\"></td><td width=\"45%\"><iframe width=\"864\" height=\"486\" src=\"https://www.youtube.com/embed/<song2>\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></td></tr></table>";
 			int additionalStartTime = 0;
-            if (votingTime > 0)
-				switch (this.CurrentRound.RoundNumber)
-				{
-					case 2:
-						additionalStartTime = votingTime/2;
-						break;
-					case 3:
+			int votingTime = this.Rounds.Where(r => r.RoundNumber < this.CurrentRound.RoundNumber).Select(r => r.FinishedMatches).Sum(r => r.VotingTime())/2;
+			if (this.PlayingTime > 0 || votingTime>0)
+			{
+				if(CurrentRound.RoundNumber > 1)
+					additionalStartTime += PlayingTime;
+				additionalStartTime += votingTime;
 
-						additionalStartTime = votingTime;
-						break;
-					case 4:
-						additionalStartTime = Convert.ToInt32(votingTime*1.5);
-						break;
-					case 5:
-						additionalStartTime = votingTime*2;
-						break;
-					case 6:
-						additionalStartTime = Convert.ToInt32(votingTime*2.5);
-						break;
-				}
+			}
 			
-			html = html.Replace("<song1>", this.CurrentMatchup.Song1.Code + ((this.CurrentMatchup.Song1.StartTime > 0) ? "?start=" + (this.CurrentMatchup.Song1.StartTime+additionalStartTime) : ""));
-			html = html.Replace("<song2>", this.CurrentMatchup.Song2.Code + ((this.CurrentMatchup.Song2.StartTime > 0) ? "?start=" + (this.CurrentMatchup.Song2.StartTime + additionalStartTime) : ""));
+			html = html.Replace("<song1>", this.CurrentMatchup.Song1.Code + ((this.CurrentMatchup.Song1.StartTime + additionalStartTime > 0) ? "?start=" + (this.CurrentMatchup.Song1.StartTime+additionalStartTime) : ""));
+			html = html.Replace("<song2>", this.CurrentMatchup.Song2.Code + ((this.CurrentMatchup.Song2.StartTime + additionalStartTime > 0) ? "?start=" + (this.CurrentMatchup.Song2.StartTime + additionalStartTime) : ""));
 			//html = html.Replace("<user1>", this.CurrentMatchup.Song1.User);
 			//html = html.Replace("<user2>", this.CurrentMatchup.Song2.User);
 			File.WriteAllText(HtmlPath, html);
@@ -250,12 +228,14 @@ namespace SBEX.FNSC.Classes
 			return true;
 
 		}
-		private System.Timers.Timer aTimer;
+		private Stopwatch votingTimer = new Stopwatch();
+
+        private System.Timers.Timer aTimer;
 		public bool OpenVoting(int seconds = 0)
 		{
 
-			votingTime = seconds;
-			CPH?.ObsSetGdiText(OBSScene, VoteLeftSource, "0");
+            
+            CPH?.ObsSetGdiText(OBSScene, VoteLeftSource, "0");
 			CPH?.ObsSetGdiText(OBSScene, VoteRightSource, "0");
 			if (seconds > 0)
 			{
@@ -272,8 +252,9 @@ namespace SBEX.FNSC.Classes
 					this.CurrentMatchup.CanBeVoted = false;
 					this.VotesOpen = false;
                     CPH?.SendMessage("Voting is closed", true); //, the winner is " + this.CurrentMatchup.Winner.Code, true);
-                    
-					CPH?.ObsSetSourceVisibility(OBSScene, CountdownSource, false);
+					votingTimer.Stop();
+					this.CurrentMatchup.VotingTime = Convert.ToInt32(votingTimer.Elapsed.TotalSeconds);
+                    CPH?.ObsSetSourceVisibility(OBSScene, CountdownSource, false);
 					if (this.CurrentMatchup.Votes1 == this.CurrentMatchup.Votes2)
 					{
 						CPH?.SendMessage("It's a tie!", true);
@@ -297,16 +278,19 @@ namespace SBEX.FNSC.Classes
 						Log("[SC] - Automatic vote closing winner: " + this.CurrentMatchup.Winner.Serialize());
 					}
                     aTimer.Stop();
+					OnVotingTimerElapsed(this, new EventArgs());
                 };
 				aTimer.Interval = seconds * 1000;
 				aTimer.Enabled = true;
 				aTimer.Start();
+	
 				CPH?.ObsSetSourceVisibility(OBSScene, CountdownSource, true);
 
 			}
 
-
-			this.VotesOpen = true;
+            votingTimer.Reset();
+            votingTimer.Start();
+            this.VotesOpen = true;
 			this.CurrentMatchup.CanBeVoted = true;
 			this.CurrentMatchup.Winner = null;
 			this.CurrentMatchup.Votes1 = this.CurrentMatchup.Votes2 = 0;
@@ -317,8 +301,9 @@ namespace SBEX.FNSC.Classes
 
 			return true;
 		}
-
-		public bool CloseVoting()
+        public delegate void VotingTimerElapsedHandler(object sender, EventArgs e);
+        public event VotingTimerElapsedHandler OnVotingTimerElapsed;
+        public bool CloseVoting()
 		{
 			if (this == null || this.CurrentMatchup == null || !this.CurrentMatchup.CanBeVoted)
 				return false;
@@ -326,8 +311,10 @@ namespace SBEX.FNSC.Classes
 			this.VotesOpen = false;
 			Log($"[SC] - Closing Voting OBSScene={OBSScene}, CountdownSource={CountdownSource}");
 			CPH?.ObsSetSourceVisibility(OBSScene, CountdownSource, false);
-			if (aTimer.Enabled)
+			if (aTimer != null && aTimer.Enabled)
 				aTimer.Stop();
+			votingTimer.Stop();
+			this.CurrentMatchup.VotingTime = Convert.ToInt32(votingTimer.Elapsed.TotalSeconds);
 			CPH?.SendMessage("Voting is closed", true);
 			if (this.CurrentMatchup.Votes1 == this.CurrentMatchup.Votes2)
 			{
@@ -351,18 +338,29 @@ namespace SBEX.FNSC.Classes
 		}
 		public void MainExport()
 		{
-
-			if (string.IsNullOrEmpty(GameExportPath))
+            try
+            {
+                if (string.IsNullOrEmpty(GameExportPath))
 				return;
 			File.WriteAllText(GameExportPath + "\\" + this.Start.ToString("dd-MM-yyyy_HH-mm") + ".json", this.Export());
 			CPH?.SendMessage("game exported", true);
-
-		}
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error exporting championship to file! Make sure you have configured the ExportPath!\n\n" + e.Message, "ERROR", MessageBoxButtons.OK);
+            }
+        }
 		public void DCExport()
 		{
-			this.DiscordExport();
-			Discord.SendFile(this.ExportResult, this.FileName, this.FullPath);
-			CPH?.SendMessage("game exported to Discord", true);
+			try
+			{
+				this.DiscordExport();
+				Discord.SendFile(this.ExportResult, this.FileName, this.FullPath);
+				CPH?.SendMessage("game exported to Discord", true);
+			}catch(Exception e)
+			{
+				MessageBox.Show("Error posting to Discord! Make sure you have configured the Webhook URL!\n\n"+e.Message, "ERROR", MessageBoxButtons.OK);
+			}
 		}
 		public void Log(string message)
 		{
@@ -386,7 +384,7 @@ namespace SBEX.FNSC.Classes
 			CPH?.ObsSetSourceVisibility(OBSScene, VoteRightSource, false);
 			CPH?.ObsSetSourceVisibility(OBSScene, CountdownSource, false);
 			CPH?.ObsSetSourceVisibility(OBSScene, InfoSource, false);
-			
+			Songs.Clear();
 			CPH?.SetGlobalVar("currentChampionship", "");
 			Log("[SC] - Reset done!");
 			return true;
@@ -419,30 +417,45 @@ namespace SBEX.FNSC.Classes
 		}
 
 
-		public Game LoadGame(string saveName)
+		public static Game LoadGame(string saveName,IInlineInvokeProxy cph, string path)
 		{
-            if (string.IsNullOrEmpty(GameExportPath))
+            if (string.IsNullOrEmpty(path))
                 return null;
-            //                    File.WriteAllText(args["exportPath"].ToString() + "\\" + game.Start.ToString("dd-MM-yyyy_HH-mm") + ".json", JsonConvert.SerializeObject(game));
-            string filename = saveName;
-			Game loadedGame = JsonConvert.DeserializeObject<Game>(File.ReadAllText(GameExportPath + "\\" + filename + ".json"));
+            try
+            { //                    File.WriteAllText(args["exportPath"].ToString() + "\\" + game.Start.ToString("dd-MM-yyyy_HH-mm") + ".json", JsonConvert.SerializeObject(game));
+                string filename = saveName;
+			Game loadedGame = JsonConvert.DeserializeObject<Game>(File.ReadAllText(path + "\\" + filename + ".json"));
 			if (loadedGame == null)
 			{
-				CPH?.SendMessage("Load game failed");
+				cph?.SendMessage("Load game failed");
 			}
 			else
 			{
-				CPH?.SendMessage("Load game success");
+				cph?.SendMessage("Load game success");
 			}
 			return loadedGame;
-
-		}
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error loading championship! Make sure you have configured the ExportPath!\n\n" + e.Message, "ERROR", MessageBoxButtons.OK);
+            }
+			return null;
+        }
 		public void SaveGame(string saveName)
 		{
-			string filename = saveName;
+            if (string.IsNullOrEmpty(GameExportPath))
+                return;
+            try
+			{
+				string filename = saveName;
 
-			File.WriteAllText(GameExportPath + "\\" + filename + ".json", JsonConvert.SerializeObject(this));
-			CPH?.SendMessage($"game saved as {filename}");
+				File.WriteAllText(GameExportPath + "\\" + filename + ".json", JsonConvert.SerializeObject(this));
+				CPH?.SendMessage($"game saved as {filename}");
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show("Error saving championship to file! Make sure you have configured the ExportPath!\n\n" + e.Message, "ERROR", MessageBoxButtons.OK);
+			}
 
 
 		}
@@ -478,7 +491,7 @@ namespace SBEX.FNSC.Classes
         #endregion
 
         #region Chat
-        public bool Submit(string url, string username, string userid)
+        public bool Submit(string url, string username, string userid, bool remove = false)
 		{
 
 			Log($"Starting submission of {url} by {username}({userid})");
@@ -503,7 +516,7 @@ namespace SBEX.FNSC.Classes
 					startTime = uri.Segments[2];
 				Log("code = " + code);
 				Log("startTime = " + startTime);
-				if (url.ToLower().StartsWith("remove ") || url.ToLower().StartsWith("rem "))
+				if(remove)
 					Remove(userid, code);
 				else
 				{
@@ -579,33 +592,38 @@ namespace SBEX.FNSC.Classes
 
 		public bool Remove(string username, string code = "")
 		{
-			Log("Starting submission");
-			Song song = null;
-			if (!string.IsNullOrEmpty(code))
+			try
 			{
-				song = this.Songs.FirstOrDefault(s => s.Code == code);
-			}
-			if (song == null && !string.IsNullOrEmpty(username))
-			{
-				song = this.Songs.FirstOrDefault(s => s.User == username);
-			}
-			if (song != null)
-			{
-				this.Songs.Remove(song);
-				CPH?.SendWhisper(username, $"Your song ({song.Name}) has been removed!", true);
-				if (Songs.Count < NoOfSongs)
+				Log("Starting submission");
+				Song song = null;
+				if (!string.IsNullOrEmpty(code))
 				{
-					string text = "Theme for championship no " + this.ChampionshipNo + ":\n\r\n" + this.Theme + "\n\r\n\rSubmissions are open\n\r\nSongs: " + this.Songs.Count() + "/" + this.NoOfSongs + "\n\r\nSongs/person: " + this.NoOfSongsPerPerson;
-					CPH?.ObsSetGdiText(OBSScene, InfoSource, text);
-                    this.SubmissionsOpen = true;
-					this.Rounds.Clear();
-					this.CurrentRound = null; 
-					this.CurrentMatchup = null;
+					song = this.Songs.FirstOrDefault(s => s.Code == code);
+				}
+				if (song == null && !string.IsNullOrEmpty(username))
+				{
+					song = this.Songs.FirstOrDefault(s => s.User == username);
+				}
+				if (song != null)
+				{
+					this.Songs.Remove(song);
+					CPH?.SendWhisper(username, $"Your song ({song.Name}) has been removed!", true);
+					if (Songs.Count < NoOfSongs)
+					{
+						string text = "Theme for championship no " + this.ChampionshipNo + ":\n\r\n" + this.Theme + "\n\r\n\rSubmissions are open\n\r\nSongs: " + this.Songs.Count() + "/" + this.NoOfSongs + "\n\r\nSongs/person: " + this.NoOfSongsPerPerson;
+						CPH?.ObsSetGdiText(OBSScene, InfoSource, text);
+						this.SubmissionsOpen = true;
+						this.Rounds.Clear();
+						this.CurrentRound = null;
+						this.CurrentMatchup = null;
 
-                }
+					}
+				}
+				else { CPH?.SendWhisper(username, $"You have not submitted a song yet!", true); }
+			}catch(Exception e)
+			{
+				MessageBox.Show(e.Message);
 			}
-			else { CPH?.SendWhisper(username, $"You have not submitted a song yet!", true); }
-
 			return true;
 
 		}
