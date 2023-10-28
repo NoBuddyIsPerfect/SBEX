@@ -49,11 +49,15 @@
             // 
             // listBoxLog
             // 
+            this.listBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxLog.FormattingEnabled = true;
             this.listBoxLog.Location = new System.Drawing.Point(12, 213);
             this.listBoxLog.Name = "listBoxLog";
             this.listBoxLog.Size = new System.Drawing.Size(776, 225);
             this.listBoxLog.TabIndex = 1;
+            this.listBoxLog.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBoxLog_MouseDoubleClick);
             // 
             // btnLaunchManagement
             // 

@@ -107,6 +107,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SBEX.BASE\SBEX.BASE.csproj">
+      <Project>{E07B4D9F-FB4B-46BD-829D-325EBB2AF11E}</Project>
+      <Name>SBEX.BASE</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SBEX.FNSC\SBEX.FNSC.csproj">
       <Project>{f5771311-6b91-4ae3-8c81-368552f0fb30}</Project>
       <Name>SBEX.FNSC</Name>

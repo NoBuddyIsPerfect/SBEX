@@ -8,7 +8,7 @@ namespace SBEX.FNSC.Platforms
 {
     public static class YouTube
     {
-        public static void GetYTVideoDetails(string code, string ytApiKey, out string desc, out string channel, out TimeSpan length)
+        public static string GetYTVideoDetails(string code, string ytApiKey, out string desc, out string channel, out TimeSpan length)
         {
             desc = "NO TITLE";
             channel = "NO CHANNEL";
@@ -16,7 +16,8 @@ namespace SBEX.FNSC.Platforms
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("User-Agent", "C# console program");
-                var content = client.GetStringAsync("https://www.googleapis.com/youtube/v3/videos?id=" + code + "&part=contentDetails&part=snippet&key=" + ytApiKey).Result;
+                string url = "https://www.googleapis.com/youtube/v3/videos?id=" + code + "&part=contentDetails&part=snippet&key=" + ytApiKey;
+                var content = client.GetStringAsync(url).Result;
                 
 
                 Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(content);
@@ -37,6 +38,7 @@ namespace SBEX.FNSC.Platforms
                     //    return true;
                     //}
                 }
+                return url;
             }
         }
     }

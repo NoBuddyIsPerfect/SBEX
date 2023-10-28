@@ -1,10 +1,13 @@
 ﻿using Newtonsoft.Json;
+using SBEX.BASE.Helpers;
+using SBEX.COM;
 using SBEX.FNSC.Classes;
 using SBEX.FNSC.Helpers;
 using SBEX.FNSC.Platforms;
 using Streamer.bot.Plugin.Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Policy;
@@ -96,6 +99,8 @@ namespace SBEX.FNSC.Forms
 
         private void BindChampionship()
         {
+            if (currentChampionship == null)
+                return;
             cboNoOfSongs.Text = currentChampionship.NoOfSongs.ToString();
             cboSongsPerPerson.Text = currentChampionship.NoOfSongsPerPerson.ToString();
             txtTheme.Text = currentChampionship.Theme;
@@ -103,10 +108,10 @@ namespace SBEX.FNSC.Forms
             chkDoubles.Checked = currentChampionship.AllowDoubles;
             chkRandom.Checked = currentChampionship.Random;
             // dataGridView1.DataSource = currentChampionship?.Songs;
-            ThreadedBindingList<Song> list = currentChampionship?.Songs;
-            list.SynchronizationContext = SynchronizationContext.Current;
-            dataGridView1.DataSource = list;
-            list.ListChanged += Songs_ListChanged;
+            //ThreadedBindingList<Song> list = currentChampionship?.Songs;
+            currentChampionship.Songs.SynchronizationContext = SynchronizationContext.Current;
+            dataGridView1.DataSource = currentChampionship?.Songs;
+            currentChampionship.Songs.ListChanged += Songs_ListChanged;
 
         }
 
@@ -121,6 +126,13 @@ namespace SBEX.FNSC.Forms
                     {
                         CPH?.SendWhisper(deletedSong.User, $"Your song ({deletedSong.Name}) has been removed!", true);
                         deletedSong = null;
+                    }
+                    if (!currentChampionship.SubmissionsOpen && currentChampionship.Songs.Count() <= currentChampionship.NoOfSongs)
+                    {
+                        currentChampionship.OpenSubmissions();
+                        currentChampionship.Songs.SynchronizationContext = SynchronizationContext.Current;
+                        dataGridView1.DataSource = currentChampionship?.Songs;
+                        currentChampionship.Songs.ListChanged += Songs_ListChanged;
                     }
                 }
             }
@@ -160,7 +172,7 @@ namespace SBEX.FNSC.Forms
                     btnSave.Enabled =
 
                 btnExportDC.Enabled =
-                    btnExport.Enabled =
+                 //   btnExport.Enabled =
                     btnCoinflip.Enabled =
                     btnVote1.Enabled =
                     btnVote2.Enabled =
@@ -177,7 +189,7 @@ namespace SBEX.FNSC.Forms
                     btnSave.Enabled =
                     btnLoad.Enabled = true;
                 btnExportDC.Enabled =
-                    btnExport.Enabled =
+                 //   btnExport.Enabled =
                     btnCoinflip.Enabled =
                     btnVote1.Enabled =
                     btnVote2.Enabled =
@@ -197,7 +209,7 @@ namespace SBEX.FNSC.Forms
                 btnSubmit.Enabled =
 
                 btnExportDC.Enabled =
-                    btnExport.Enabled =
+                 //   btnExport.Enabled =
                     btnCoinflip.Enabled =
                     btnVote1.Enabled =
                     btnVote2.Enabled =
@@ -219,7 +231,7 @@ namespace SBEX.FNSC.Forms
                 btnSubmit.Enabled =
                     btnNext.Enabled =
                     btnModify.Enabled =
-                    btnExport.Enabled =
+                 //   btnExport.Enabled =
                     btnCoinflip.Enabled =
                     btnSetup.Enabled =
                     btnOpenVoting.Enabled = btnOpenVoting60.Enabled = numVotesSeconds.Enabled =
@@ -241,7 +253,7 @@ namespace SBEX.FNSC.Forms
                     btnVote2.Enabled =
                     btnSubmit.Enabled =
                     btnModify.Enabled =
-                    btnExport.Enabled =
+                   // btnExport.Enabled =
 
                     btnSetup.Enabled =
 
@@ -252,7 +264,7 @@ namespace SBEX.FNSC.Forms
             {
                 CPH.LogDebug("[SC] - SetupButtons - winner chosen");
                 btnExportDC.Enabled =
-                    btnExport.Enabled =
+                  //  btnExport.Enabled =
                 btnReset.Enabled =
                 btnSave.Enabled =
                 btnLoad.Enabled = true;
@@ -304,6 +316,7 @@ namespace SBEX.FNSC.Forms
             currentChampionship.InfoSource = args.InfoSource;
             currentChampionship.CoinFlipSource = args.CoinFlipSource;
             currentChampionship.YtApiKey = args.YouTubeApiKey;
+            currentChampionship.SendWhispers = args.SendWhispers;
             currentChampionship.CPH = CPH;
             currentChampionship.PlayingTime = Convert.ToInt32(numPlayingTime.Value);
             currentChampionship.OnVotingTimerElapsed += (s, ev) =>
@@ -379,13 +392,14 @@ namespace SBEX.FNSC.Forms
         {
             Arguments arguments = ArgumentHelper.ParseArgs(args);
             bool result = false;
+            CPH?.LogDebug("[SC] - command received: " + arguments.Command);
             switch (arguments.Command)
             {
                 case "1":
                 case "2":
                     result = RegisterVote(arguments);
                     break;
-                case "youtube":
+                case "youtube.com":
                 case "youtu.be":
                     result = RegisterSubmission(arguments);
                     break;
@@ -400,6 +414,11 @@ namespace SBEX.FNSC.Forms
                     break;
                 case "modifyGame":
                     result = currentChampionship.ModifyGame(arguments,true, true);
+                    CPH?.SendMessage("Submissions are open (" + currentChampionship.NoOfSongs + " songs, " + currentChampionship.NoOfSongsPerPerson + " per person)", true);
+                    string text = "Theme for championship no " + currentChampionship.ChampionshipNo + ":\n\r\n" + currentChampionship.Theme + "\n\r\n\rSubmissions are open\n\r\nSongs: " + currentChampionship.Songs.Count + "/" + currentChampionship.NoOfSongs + "\n\r\nSongs/person: " + currentChampionship.NoOfSongsPerPerson;
+                    this.Text = "Song Championship Management - " + "\"" + currentChampionship.Theme + "\" (" + currentChampionship.NoOfSongs + " songs, " + currentChampionship.NoOfSongsPerPerson + " per person) - Submissions are " + (currentChampionship.SubmissionsOpen ? "open" : "closed");
+
+                    CPH?.ObsSetGdiText(arguments.OBSScene, arguments.InfoSource, text);
                     break;
                 case "reset":
                     result = currentChampionship.Reset();
@@ -418,7 +437,7 @@ namespace SBEX.FNSC.Forms
         public bool RegisterSubmission(Arguments arguments)
         {
             bool remove = arguments.RawInput.Split(' ')[0].StartsWith("rem");
-                
+            CPH?.LogDebug("Registering submission: " + arguments.RawInput + " by " + arguments.User);        
             bool result = currentChampionship.Submit(arguments.RawInput.Replace("remove ", "").Replace("rem ", ""), arguments.User, arguments.UserId, arguments.RawInput.Split(' ')[0].StartsWith("rem"));
             SetupButtons();
             return result;
@@ -441,7 +460,50 @@ namespace SBEX.FNSC.Forms
         private void btnLoad_Click(object sender, EventArgs e)
         {
             currentChampionship = Game.LoadGame(txtSaveGame.Text, CPH, args.ExportPath);
+            currentChampionship.NoOfSongs = args.NoOfSongs;
+            currentChampionship.NoOfSongsPerPerson = args.NoOfSongsPerPerson;
+            currentChampionship.Theme = args.Theme;
+            currentChampionship.ChampionshipNo = args.ChampionshipNo;
+            currentChampionship.Random = args.Random;
+            currentChampionship.AllowDoubles = args.DoublesAllowed;
+            currentChampionship.SubmissionsOpen = true;
+            currentChampionship.GameExportPath = args.ExportPath;
+            currentChampionship.HtmlPath = args.HtmlPath;
+            currentChampionship.OBSScene = args.OBSScene;
+            currentChampionship.MainBrowserSource = args.MainBrowserSource;
+            currentChampionship.CountdownSource = args.CountdownSource;
+            currentChampionship.VoteLeftSource = args.VoteLeftSource;
+            currentChampionship.VoteRightSource = args.VoteRightSource;
+            currentChampionship.RoundSource = args.RoundSource;
+            currentChampionship.InfoSource = args.InfoSource;
+            currentChampionship.CoinFlipSource = args.CoinFlipSource;
+            currentChampionship.YtApiKey = args.YouTubeApiKey;
+            currentChampionship.SendWhispers = args.SendWhispers;
+            currentChampionship.CPH = CPH;
+            currentChampionship.PlayingTime = Convert.ToInt32(numPlayingTime.Value);
+            currentChampionship.OnVotingTimerElapsed += (s, ev) =>
+            {
+                this.Invoke(updateUI);
+            };
+            //CPH.LogDebug(currentChampionship.LogValues());
+            CPH.SendMessage("Submissions for the theme \"" + currentChampionship.Theme + "\" are open (" + currentChampionship.NoOfSongs + " songs, " + currentChampionship.NoOfSongsPerPerson + " per person)", true);
+            string text = "Theme for championship no " + currentChampionship.ChampionshipNo + ":\n\r\n" + currentChampionship.Theme + "\n\r\n\rSubmissions are open\n\r\nSongs: " + currentChampionship.Songs.Count + "/" + currentChampionship.NoOfSongs + "\n\r\nSongs/person: " + currentChampionship.NoOfSongsPerPerson;
+            CPH.LogDebug("Setting text - " + args.InfoSource);
+            CPH.ObsSetGdiText(args.OBSScene, args.InfoSource, text);
+            CPH.LogDebug("showing source - " + args.InfoSource);
+            CPH.ObsSetSourceVisibility(args.OBSScene, args.InfoSource, true);
+            CPH.LogDebug("hiding battle - " + args.MainBrowserSource);
+            CPH.ObsSetSourceVisibility(args.OBSScene, args.MainBrowserSource, false);
+            CPH.LogDebug("binding championship");
             BindChampionship();
+            CPH.LogDebug("setting up buttons");
+            SetupButtons();
+            CPH.LogDebug("setting up timer");
+            CPH.LogDebug("setting title");
+            this.Text = "Song Championship Management - " + "\"" + currentChampionship.Theme + "\" (" + currentChampionship.NoOfSongs + " songs, " + currentChampionship.NoOfSongsPerPerson + " per person) - Submissions are " + (currentChampionship.SubmissionsOpen ? "open" : "closed");
+            CPH.LogDebug("done");
+            BindChampionship();
+            CPH?.LogDebug(currentChampionship.Export());
             SetupButtons();
         }
 
@@ -534,7 +596,8 @@ namespace SBEX.FNSC.Forms
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             deletedSong = e.Row.DataBoundItem as Song;
-
+            //if (currentChampionship != null)
+            //    currentChampionship.Songs.Remove(deletedSong);
         }
 
 

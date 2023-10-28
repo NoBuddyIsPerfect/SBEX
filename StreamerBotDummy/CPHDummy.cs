@@ -1536,5 +1536,155 @@ namespace StreamerBotForms
         {
             throw new NotImplementedException();
         }
+
+        public void LogError(string logLine)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundColor(string buttonId, string color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundColor(string buttonId, string color, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundUrl(string buttonId, string imageUrl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundUrl(string buttonId, string imageUrl, string color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundUrl(string buttonId, string imageUrl, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundUrl(string buttonId, string imageUrl, string color, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundLocal(string buttonId, string imageFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundLocal(string buttonId, string imageFile, string color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundLocal(string buttonId, string imageFile, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetBackgroundLocal(string buttonId, string imageFile, string color, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetTitle(string buttonId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetTitle(string buttonId, string title, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetState(string buttonId, int state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckSetValue(string buttonId, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckShowAlert(string buttonId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckShowOk(string buttonId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StreamDeckToggleState(string buttonId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public GuestStarSettings TwitchGetChannelGuestStarSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchUpdateChannelGuestStarSettings(bool? isModeratorSendLiveEnabled = null, int? slotCount = null, bool? isBrowserSourceAudioEnabled = null, string groupLayout = null, bool? regeneratgeBrowserSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public GuestSession TwitchGetGuestStarSession()
+        {
+            throw new NotImplementedException();
+        }
+
+        public GuestSession TwitchCreateGuestStarSession()
+        {
+            throw new NotImplementedException();
+        }
+
+        public GuestSession TwitchEndGuestStarSession()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<GuestStarInvite> TwitchGetGuestStarInvites()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchSendGuestStarInvite(string userLogin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchDeleteGuestStarInvite(string userLogin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchAssignGuestStarSlot(string userLogin, int slot)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchUpdateGuestStarSlot(int sourceSlot, int destinationSlot)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchDeleteGuestStarSlot(string userLogin, int slot)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TwitchUpdateGuestStarSlotSettings(int slotId, bool? isAudioEnabled = null, bool? isVideoEnabled = null, bool? isLive = null, int? volume = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

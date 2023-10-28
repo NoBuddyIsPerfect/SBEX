@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SBEX.FNSC.Helpers
+namespace SBEX.BASE.Helpers
 {
 
     public class SBUser
@@ -14,9 +14,9 @@ namespace SBEX.FNSC.Helpers
 
     public class Arguments
     {
-        public bool IsMod = false, DoublesAllowed = false, IsCoinFlip = false, Random = false;
+        public bool IsMod = false, DoublesAllowed = false, IsCoinFlip = false, Random = false, SendWhispers = true, ShowMessageboxes=true;
         public string Command= "", User= "", UserId= "", Theme= "", RawInput = "",YouTubeApiKey = "", ExportPath= "", OBSScene= "",
-             MainBrowserSource= "", CountdownSource= "", VoteLeftSource= "", VoteRightSource= "", HtmlPath= "",
+             MainBrowserSource= "", CountdownSource= "", VoteLeftSource= "", VoteRightSource= "", HtmlPath= "", Game ="",
              RoundSource= "", InfoSource= "", CoinFlipSource = "", DiscordWebhookUrl;
         public int NoOfSongs = 0, NoOfSongsPerPerson = 0, ChampionshipNo = 0, VotingDuration=0;
         public List<string> Parameters;
@@ -31,6 +31,8 @@ namespace SBEX.FNSC.Helpers
                 $"\n\rExportPath: {ExportPath}" +
                 $"\n\rHtmlPath: {HtmlPath}" +
                 $"\n\rYouTubeApiKey: {YouTubeApiKey}" +
+                $"\n\rSendWhispers: {SendWhispers}" +
+                $"\n\rShowMessageboxes: {ShowMessageboxes}" +
                 $"\n\rINPUT:" +
                 $"\n\rDoublesAllowed: {DoublesAllowed}" +
                 $"\n\rIsCoinFlip: {IsCoinFlip}" +
@@ -74,6 +76,8 @@ namespace SBEX.FNSC.Helpers
 
             if (args.ContainsKey("rawInput"))
                 parsedArgs.RawInput = args["rawInput"].ToString();
+            if (args.ContainsKey("game"))
+                parsedArgs.Game = args["game"].ToString();
             if (args.ContainsKey("youTubeApiKey"))
                 parsedArgs.YouTubeApiKey = args["youTubeApiKey"].ToString();
             if (args.ContainsKey("webhookUrl"))
@@ -111,6 +115,10 @@ namespace SBEX.FNSC.Helpers
                 parsedArgs.Random = bool.Parse(args["random"].ToString());
             if (args.ContainsKey("allowDoubles"))
                 parsedArgs.DoublesAllowed = bool.Parse(args["allowDoubles"].ToString());
+            if (args.ContainsKey("SendWhispers"))
+                parsedArgs.SendWhispers = bool.Parse(args["SendWhispers"].ToString());
+            if (args.ContainsKey("ShowMessageboxes"))
+                parsedArgs.ShowMessageboxes = bool.Parse(args["ShowMessageboxes"].ToString());
             if (args.ContainsKey("no"))
                 parsedArgs.ChampionshipNo= int.Parse(args["no"].ToString());
             if (args.ContainsKey("duration"))

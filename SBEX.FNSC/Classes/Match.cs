@@ -14,6 +14,7 @@ namespace SBEX.FNSC.Classes
         public Song Song2 { get; set; }
 
         public int Votes2 { get; set; }
+        
         [JsonIgnore]
         public int VotingTime;
 

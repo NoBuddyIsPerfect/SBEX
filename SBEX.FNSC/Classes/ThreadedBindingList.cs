@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 
 namespace SBEX.FNSC.Classes
@@ -10,6 +11,12 @@ namespace SBEX.FNSC.Classes
         {
             get { return _ctx; }
             set { _ctx = value; }
+        }
+
+        public void AddList(List<T> list)
+        {
+            foreach (T item in list)
+                Add(item);
         }
 
         SynchronizationContext _ctx;

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SBEX.BASE.Helpers;
 using SBEX.FNSC.Forms;
 using SBEX.FNSC.Helpers;
 using System;
@@ -34,7 +35,12 @@ namespace StreamerBotForms
         }
 
 
-        string users = "[{\"id\":\"108639097\",\"userName\":\"sukaably\",\"display\":\"sukaably\",\"role\":1,\"isSubscribed\":false},{\"id\":\"19264788\",\"userName\":\"nightbot\",\"display\":\"Nightbot\",\"role\":3,\"isSubscribed\":false},{\"id\":\"541450924\",\"userName\":\"creatisbot\",\"display\":\"CreatisBot\",\"role\":1,\"isSubscribed\":false},{\"id\":\"875001024\",\"userName\":\"notabotdef9\",\"display\":\"notabotdef9\",\"role\":1,\"isSubscribed\":false},{\"id\":\"206992018\",\"userName\":\"nobuddyisperfect\",\"display\":\"NoBuddyIsPerfect\",\"role\":4,\"isSubscribed\":true}]";
+        string users = "[{\"id\":\"108639097\",\"userName\":\"sukaably\",\"display\":\"sukaably\",\"role\":1,\"isSubscribed\":false},{\"id\":\"19264788\",\"userName\":\"nightbot\",\"display\":\"Nightbot\",\"role\":3,\"isSubscribed\":false},{\"id\":\"541450924\",\"userName\":\"creatisbot\",\"display\":\"CreatisBot\",\"role\":1,\"isSubscribed\":false},{\"id\":\"875001024\",\"userName\":\"notabotdef9\",\"display\":\"notabotdef9\",\"role\":1,\"isSubscribed\":false},{\"id\":\"206992018\",\"userName\":\"nobuddyisperfect\",\"display\":\"NoBuddyIsPerfect\",\"role\":4,\"isSubscribed\":true}" +
+            ",{\"id\":\"00000001\",\"userName\":\"a\",\"display\":\"a\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000002\",\"userName\":\"b\",\"display\":\"b\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000003\",\"userName\":\"c\",\"display\":\"c\",\"role\":3,\"isSubscribed\":false}" +
+            ",{\"id\":\"00000004\",\"userName\":\"d\",\"display\":\"d\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000005\",\"userName\":\"e\",\"display\":\"e\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000006\",\"userName\":\"f\",\"display\":\"f\",\"role\":3,\"isSubscribed\":false}" +
+            ",{\"id\":\"00000007\",\"userName\":\"g\",\"display\":\"g\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000008\",\"userName\":\"h\",\"display\":\"h\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000009\",\"userName\":\"i\",\"display\":\"i\",\"role\":3,\"isSubscribed\":false}" +
+            ",{\"id\":\"000000010\",\"userName\":\"j\",\"display\":\"j\",\"role\":3,\"isSubscribed\":false},{\"id\":\"00000011\",\"userName\":\"k\",\"display\":\"k\",\"role\":3,\"isSubscribed\":false},{\"id\":\"000000012\",\"userName\":\"l\",\"display\":\"l\",\"role\":3,\"isSubscribed\":false}" +
+            "]";
 
         public MainForm()
         {
@@ -100,7 +106,8 @@ namespace StreamerBotForms
                 {"youTubeApiKey", YouTubeApiKey},
                 {"htmlPath", htmlPath},
                 {"webhookUrl", DiscordURL },
-                {"users",    users}
+                {"users",    users},
+                {"SendWhispers", false }
             };
             dummy.SetGlobalVar("users", users, false);
         }
@@ -151,6 +158,15 @@ namespace StreamerBotForms
             myargs.Add("userId", cboVoteUser.SelectedValue.ToString());
             SongListForm.GetInstance()?.HandleSBCall(myargs);
 
+        }
+
+        private void listBoxLog_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if(listBoxLog.SelectedItem != null)
+            {
+                Clipboard.SetText(listBoxLog.SelectedItem.ToString());
+                MessageBox.Show("Copied!");
+            }
         }
     }
 
